@@ -1,0 +1,117 @@
+import processing.video.*;
+// import codeanticode.syphon.*;
+import spout.*;
+//SyphonServer server;
+Spout server;
+ChildApplet child;
+
+Movie movie;
+
+
+/* image Cutting *\ 
+
+ 0.00 - 0.14
+ 0.23 - 0.37
+ 0.43 - 0.57
+ 0.63 - 0.77
+ 0.86 - 1.00
+ 
+*/
+
+void settings() {
+  fullScreen(P3D, 2);
+  //size(300, 600, P3D);
+}
+
+void setup() {
+  child = new ChildApplet();
+  movie = new Movie(this, "pentura.mov");
+  movie.loop();
+  //server = new SyphonServer(this, "Pentura");
+  server = new Spout(this);
+  server.setSenderName("Pentura");
+  
+  background(0);
+}
+
+void draw() {
+  if (!movie.available())return;
+  movie.read();
+  //server.sendImage(movie);
+  server.sendTexture(movie);
+  beginShape();
+  texture(movie);
+  vertex(0,     0,      0.00 * movie.width, 0.00 * movie.height);
+  vertex(width, 0,      0.14 * movie.width, 0.00 * movie.height);
+  vertex(width, height, 0.14 * movie.width, 1.00 * movie.height);
+  vertex(0,     height, 0.00 * movie.width, 1.00 * movie.height);
+  endShape();
+}
+
+class ChildApplet extends PApplet {
+  //SyphonClient client;
+  Spout client;
+  PGraphics movie;
+  
+  public ChildApplet() {
+    super();
+    PApplet.runSketch(new String[]{this.getClass().getName()}, this);
+  }
+
+  public void settings() {
+    fullScreen(P3D, 1);
+    //size(1200, 600, P3D);
+  }
+  
+  public void setup() { 
+    //client = new SyphonClient(this, "", "Pentura");
+    client = new Spout(this);
+    client.setReceiverName("Pentura");
+    background(0);
+  }
+
+  public void draw() {
+    //if (!client.newFrame()) return;
+   // if (!client.) return;
+    
+    //movie = client.getGraphics(movie);
+    movie = client.receiveTexture(movie);
+    
+    noStroke();
+    translate(0, 0);
+    beginShape();
+    texture(movie);
+    vertex(0,          0,      0.23 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, 0,      0.37 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, height, 0.37 * movie.width, 1.00 * movie.height);
+    vertex(0,          height, 0.23 * movie.width, 1.00 * movie.height);
+    endShape();
+    
+    translate(width*0.25, 0);
+    beginShape();
+    texture(movie);
+    vertex(0,          0,      0.43 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, 0,      0.57 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, height, 0.57 * movie.width, 1.00 * movie.height);
+    vertex(0,          height, 0.43 * movie.width, 1.00 * movie.height);
+    endShape();
+    
+    translate(width*0.25, 0);
+    beginShape();
+    texture(movie);
+    vertex(0,          0,      0.63 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, 0,      0.77 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, height, 0.77 * movie.width, 1.00 * movie.height);
+    vertex(0,          height, 0.63 * movie.width, 1.00 * movie.height);
+    endShape();
+    
+    translate(width*0.25, 0);
+    beginShape();
+    texture(movie);
+    vertex(0,          0,      0.86 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, 0,      1.00 * movie.width, 0.00 * movie.height);
+    vertex(width*0.25, height, 1.00 * movie.width, 1.00 * movie.height);
+    vertex(0,          height, 0.86 * movie.width, 1.00 * movie.height);
+    endShape();
+  }
+}

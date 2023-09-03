@@ -3,16 +3,19 @@ const {run, getPIDbyAppName} = require('./common/os.tools.js');
 const {MIDI_TO_MSG, createOutput} = require('./common/midi.tools.js');
 
 const outputMidi = createOutput("lazerController");
-const blackout = () => outputMidi.sendMessage(MIDI_TO_MSG({number:1, value:0}));
-const cueTrigger = async (key) => await run (`runCue.ahk ${await getPIDbyAppName("QS.exe")} ${key}`);
+let QS_PID;
 
-(async ()=>{
-	const PID = await cueTrigger("A");
-})();
+module.exports.blackout = () => outputMidi.sendMessage(MIDI_TO_MSG({number:1, value:0}));
+module.exports.soloCue = () => outputMidi.sendMessage(MIDI_TO_MSG({number:1, value:1}));
+module.exports.multiCue = () => outputMidi.sendMessage(MIDI_TO_MSG({number:1, value:2}));
+module.exports.cueTrigger = async (key) =>{
+	if(QS_PID == undefined) QS_PID = await getPIDbyAppName("QS.exe"); 
+ 	return run (`runCue.ahk ${QS_PID} ${key}`)
+};
 
 
 onExit((options, exitCode)=> {
-	blackout();
+	module.exports.blackout();
 
 	outputMidi.closePort();
     if (options.cleanup) console.log('clean');

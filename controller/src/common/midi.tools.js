@@ -1,15 +1,19 @@
 const midi = require('midi');
+const rtpmidi = require('rtpmidi');
 
 const MIDI_MSG = {
 	NOTE_OFF : 0x80,
 	NOTE_ON : 0x90,
 	CONTROL_CHANGE : 0xB0,
 }
-
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key =>
+        object[key] === value);
+}
 module.exports.MSG_TO_MIDI = ([status, number, value]) => {
 	return {
 		channel : status & 0x0F,
-		type : type & 0xF0,
+		type : getKeyByValue(MIDI_MSG, status & 0xF0),
 		number : number,
 		value : value
 	}
@@ -35,3 +39,18 @@ module.exports.createOutput = (controllerName) => {
 	return output;
 }
 
+module.exports.createRTPMidi = (ip, {readyHandler=()=>{}, messageHandler=()=>{}})=>{
+	const session = rtpmidi.manager.createSession({
+	  localName: 'lazerController',
+	  bonjourName: 'lazerController',
+	  port: 5006,
+	});
+	session.on('ready', readyHandler);
+
+	session.on('message', (deltaTime, message) => {
+		const {channel, type, number, value} = module.exports.MSG_TO_MIDI(Array.from(message));
+		messageHandler(channel, type, number, value);
+	});
+
+	session.connect({ address: ip, port: 5004 });	
+}

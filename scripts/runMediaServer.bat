@@ -5,8 +5,8 @@ START /B /WAIT cmd /c "runQuickShow.ahk"
 echo DONE
 
 echo strating COMMUNICATION
-cd "C:\Users\vince\Desktop\Les Brasseurs\media server\midi2OBS"
-START /B cmd /c "node lazerController.js"
+cd "C:\Users\vince\Desktop\Les Brasseurs\media server\controller\src"
+START /B cmd /c "node main.js"
 echo DONE
 
 echo strating OBS

@@ -6,11 +6,9 @@ const outputMidi = createOutput("lazerController");
 let QS_PID;
 
 module.exports.blackout = () => outputMidi.sendMessage(MIDI_TO_MSG({number:1, value:0}));
-module.exports.soloCue = () => outputMidi.sendMessage(MIDI_TO_MSG({number:1, value:1}));
-module.exports.multiCue = () => outputMidi.sendMessage(MIDI_TO_MSG({number:1, value:2}));
 module.exports.cueTrigger = async (key) =>{
 	if(QS_PID == undefined) QS_PID = await getPIDbyAppName("QS.exe"); 
- 	return run (`runCue.ahk ${QS_PID} ${key}`)
+ 	return run(`runCue.ahk ${QS_PID} ${key}`)
 };
 
 

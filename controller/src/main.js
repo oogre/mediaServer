@@ -6,8 +6,9 @@ const {cueTrigger, soloCue, multiCue} = require('./lazerController.js')
 
 
 createRTPMidi(/*'192.168.43.48'*/ "192.168.1.60", {
-	readyHandler : () => {
+	readyHandler : async () => {
 		console.log("ready")
+		await cueTrigger("A");
 	},
 	messageHandler : async (channel, type, number, value) => {
 		console.log(channel, type, number, value)

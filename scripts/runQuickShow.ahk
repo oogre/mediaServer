@@ -1,6 +1,6 @@
 targetcolor := 0x91F6AB
-MouseX := 2000
-MouseY := 60
+MouseX := 3700 ; 2000
+MouseY := 60 ; 60
 WinGet, original, ID, A
 
 Run, "C:\Users\vince\Desktop\Les Brasseurs\laser\tabernacle.QSW"
@@ -22,6 +22,7 @@ Sleep 300
 
 MouseGetPos, MouseX, MouseY
 PixelGetColor, color, %MouseX%, %MouseY%
+
 
 if (color != targetcolor)
 {

@@ -1,9 +1,11 @@
 class Displayer extends PApplet {
   //SyphonClient client;
   Spout client;
+  Spout server;
+  boolean spourServerActive = false;
   PGraphics movie;
   Description desc;
-  
+
   public Displayer(Description desc) {
     super();
     this.desc = desc;
@@ -11,7 +13,6 @@ class Displayer extends PApplet {
     surface.setTitle(desc.videoSrc);
     if (desc.locX != -1 && desc.locY != -1)
       surface.setLocation(desc.locX, desc.locY);
-    
   }
 
   public void settings() {
@@ -22,11 +23,16 @@ class Displayer extends PApplet {
     }
   }
 
-  public void setup() { 
+  public void setup() {
     noCursor();
     //client = new SyphonClient(this, "", desc.videoSrc);
     client = new Spout(this);
+    server = new Spout(this);
     client.setReceiverName(desc.videoSrc);
+    if (null != desc.spoutName) {
+      server.setSenderName(desc.spoutName);
+      spourServerActive = true;
+    }
     background(0);
   }
 
@@ -35,21 +41,23 @@ class Displayer extends PApplet {
     //movie = client.getGraphics(movie);
     movie = client.receiveTexture(movie);
 
-
     float _size = 1.0/desc.cropeList.size();
     for (int i = 0; i < desc.cropeList.size(); i ++) {
       pushMatrix();
-      translate(i * width * _size, height);
-      scale(1, -1);
+      translate(i * width * _size, 0);
+      //scale(1, -1);
       drawFrame(movie, width * _size, desc.cropeList.get(i));
       popMatrix();
+    }
+    if (spourServerActive) {
+      server.sendTexture();
     }
   }
 
   void drawFrame(PImage src, float width, java.awt.geom.Rectangle2D.Float dimension) {
     pushMatrix();
 
-    
+
 
     noStroke();
     beginShape();

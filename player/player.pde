@@ -38,14 +38,14 @@ void setup() {
   dataDesc = (List<Description>) Arrays.asList(
     new Description(
     "pentura",
-    2,
+    "pentura_croped", 720, 1280,
     (List<java.awt.geom.Rectangle2D.Float>) Arrays.asList(
     new java.awt.geom.Rectangle2D.Float(0.00, 0.00, 0.14, 1.00)
     )
     ),
     new Description(
     "pentura",
-    1,
+    4,
     (List<java.awt.geom.Rectangle2D.Float>) Arrays.asList(
     new java.awt.geom.Rectangle2D.Float(0.23, 0.00, 0.14, 1.00),
     new java.awt.geom.Rectangle2D.Float(0.43, 0.00, 0.14, 1.00),
@@ -56,6 +56,13 @@ void setup() {
     new Description(
     "bave noire",
     3,
+    (List<java.awt.geom.Rectangle2D.Float>) Arrays.asList(
+    new java.awt.geom.Rectangle2D.Float(0.00, 0.00, 1.00, 1.00)
+    )
+    ),
+    new Description(
+    "wallpaper",
+    2,
     (List<java.awt.geom.Rectangle2D.Float>) Arrays.asList(
     new java.awt.geom.Rectangle2D.Float(0.00, 0.00, 1.00, 1.00)
     )

@@ -20,32 +20,55 @@ module.exports.init = (dict) => {
     _obsDict = dict
 }
 
-module.exports.showMedia = async ({sceneName, port, mediaName}) =>{
+module.exports.blastMedia = async ({sceneName, port, sourceName}) =>{
     if(!port){
         port = getPortByScene(sceneName);
     }
-    if(!!visibleMediaPerScene[sceneName]){
-        module.exports.hideMedia({sceneName, port, mediaName:visibleMediaPerScene[sceneName]})
-    }
-    visibleMediaPerScene[sceneName] = mediaName;
-    console.log("show", sceneName, port, mediaName);
-    await obsCli(port, `item show "${mediaName}"`);
-    return obsCli(port, `filter enable "${mediaName}" "Turn On"`);
+   
+    console.log("blast", sceneName, port, sourceName);
+    return obsCli(port, `item toggle "${sourceName}"`);
+    //return obsCli(port, `item hide "${sourceName}"`);
 };
 
-module.exports.hideMedia = async ({sceneName, port, mediaName}) =>{
+
+module.exports.showMedia = async ({sceneName, port, sourceName}) =>{
     if(!port){
         port = getPortByScene(sceneName);
     }
-    console.log("hide", sceneName, port, mediaName);
-    await obsCli(port, `filter enable "${mediaName}" "Turn Off"`);
-    return obsCli(port, `item hide "${mediaName}"`);
+   /* if(!!visibleMediaPerScene[sceneName]){
+        module.exports.hideMedia({sceneName, port, sourceName:visibleMediaPerScene[sceneName]})
+    }
+    visibleMediaPerScene[sceneName] = sourceName;*/
+    console.log("show", sceneName, port, sourceName);
+    await obsCli(port, `item show "${sourceName}"`);
+    try{
+        await obsCli(port, `filter enable "${sourceName}" "Turn On"`);
+    }catch(error){}
+};
+
+
+module.exports.hideMedia = async ({sceneName, port, sourceName}) =>{
+    if(!port){
+        port = getPortByScene(sceneName);
+    }
+    try{
+        await obsCli(port, `filter enable "${sourceName}" "Turn Off"`);
+    }catch(error){}
+    
+    return obsCli(port, `item hide "${sourceName}"`);
 };
 
 module.exports.listMedia = async (sceneName) =>{
-    const port = getPortByScene(sceneName);
-    const result = await obsCli(port, `item list`);
 
-    return [{sceneName, port, mediaName:"bonjour"}, {sceneName, port, mediaName:"yolo"}]
+    const port = getPortByScene(sceneName);
+    let rawList = await obsCli(port, `-j item list`);
+    let list = JSON.parse(rawList)
+    return list.map(({sourceName}) => {
+        return {
+            sourceName,
+            sceneName,
+            port
+        }
+    });
 };
 
